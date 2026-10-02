@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="it" data-lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BUONO</title>
+<meta name="description" content="Pay in bitcoin at local places.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23143826'/%3E%3Ccircle cx='32' cy='32' r='17' fill='%23e04a2f' stroke='%23dba23c' stroke-width='7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+<!-- BUONO home page.
+     This is the page a visitor sees: someone holding a gift card, a passer-by who scanned the window sticker, a venue owner.
+     All the wording is plain HTML below, once in Italian (data-l="it") and once in English (data-l="en"). Edit it freely.
+     It contains no keys and talks to no wallet. The till and the organiser's dashboard live in index.html. -->
+<style>
+:root{
+  --basil:#143826; --basil-2:#1c4a33; --basil-3:#2a6146;
+  --dough:#f2e6cc; --dim:#b9c4b0; --crust:#dba23c; --tomato:#e04a2f;
+  --display:"Bricolage Grotesque","Avenir Next Condensed","Trebuchet MS",system-ui,sans-serif;
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--basil); color:var(--dough); font-family:var(--body); font-size:18px; line-height:1.5;
+  padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+main{max-width:600px; margin:0 auto; padding:28px 22px 40px}
+[data-l]{display:none}
+html[data-lang="it"] [data-l="it"], html[data-lang="en"] [data-l="en"]{display:block}
+html[data-lang="it"] span[data-l="it"], html[data-lang="en"] span[data-l="en"]{display:inline}
+
+header{text-align:center; padding:8px 0 30px}
+header svg{width:min(62vw,230px); height:auto; display:block; margin:0 auto 22px}
+h1{font-family:var(--display); font-weight:800; font-size:clamp(34px,9vw,46px); line-height:1.02; letter-spacing:-.02em; margin:0 0 12px; text-wrap:balance}
+.lede{font-size:19px; color:var(--dim); margin:0 auto; max-width:30ch; text-wrap:balance}
+
+section{padding:26px 0 4px; border-top:1px solid var(--basil-3)}
+h2{font-family:var(--display); font-weight:800; font-size:27px; line-height:1.08; margin:0 0 10px}
+p{margin:0 0 14px}
+.small{font-size:16px; color:var(--dim)}
+a{color:var(--crust)}
+a:focus-visible, button:focus-visible{outline:3px solid var(--crust); outline-offset:3px}
+
+/* the card section answers the first question a card holder has, so it is the one bright panel */
+.panel{background:var(--dough); color:var(--basil); border:0; border-radius:22px; padding:24px 22px 12px; margin:0 -6px 26px}
+.panel .small{color:#3d5446}
+.steps{list-style:none; counter-reset:n; margin:16px 0 18px; padding:0}
+.steps li{counter-increment:n; position:relative; padding:0 0 14px 50px; min-height:44px}
+.steps li::before{content:counter(n); position:absolute; left:0; top:-3px; width:36px; height:36px; border-radius:50%;
+  background:var(--tomato); border:4px solid var(--crust); color:#fff; font-family:var(--display); font-weight:800; font-size:18px;
+  text-align:center; line-height:28px}
+.panel + section{border-top:0; padding-top:0}
+
+.venues{list-style:none; margin:0 0 16px; padding:0}
+.venues li{padding:12px 0; border-bottom:1px solid var(--basil-3)}
+.venues b, .venues span, .venues a{display:block}
+.venues span{color:var(--dim); font-size:16px}
+.btn{display:inline-block; border:2px solid var(--crust); border-radius:999px; padding:10px 20px; text-decoration:none; font-weight:600}
+
+footer{display:flex; justify-content:space-between; gap:16px; border-top:1px solid var(--basil-3); margin-top:26px; padding-top:18px; font-size:15px}
+footer a, footer button{color:var(--dim); background:none; border:0; padding:6px 0; font:inherit; font-size:15px; text-decoration:underline; cursor:pointer}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1372 1372" role="img" aria-label="BUONO"><circle cx="686.2" cy="686.2" r="686.2" fill="#143826"/><circle cx="686.2" cy="686.2" r="642.3" fill="none" stroke="#dba23c" stroke-width="16.5"/><g transform="translate(137.2,785.2)"><path fill="#f2e6cc" d="M320.74 4.2Q303.64 4.2 290.14 0.30000000000000027Q276.64 -3.5999999999999996 266.89 -10.8Q257.14 -18.0 250.69 -28.05Q244.24 -38.1 241.09 -50.7Q237.94 -63.3 237.94 -78.0V-198.0H286.54V-80.39999999999999Q286.54 -65.1 291.04 -55.949999999999996Q295.54 -46.8 303.19000000000005 -42.9Q310.84000000000003 -39.0 320.74 -39.0Q330.94 -39.0 338.59000000000003 -42.9Q346.24 -46.8 350.74 -55.8Q355.24 -64.8 355.24 -80.39999999999999V-198.0H403.84000000000003V-78.0Q403.84000000000003 -39.0 382.84000000000003 -17.4Q361.84000000000003 4.2 320.74 4.2Z M675.78 0.0V-198.0H740.88L811.38 -63.9H811.98V-198.0H859.98V0.0H798.78L724.38 -138.6H723.78V0.0Z"/><circle cx="102.0" cy="-99.0" r="102.0" fill="#f7931a"/><g fill="#ffffff" transform="rotate(14 102.0 -99.0)"><rect x="77.4" y="-177.2" width="12.4" height="27.5"/><rect x="77.4" y="-48.3" width="12.4" height="27.5"/><rect x="101.3" y="-177.2" width="12.4" height="27.5"/><rect x="101.3" y="-48.3" width="12.4" height="27.5"/><path d="M59.059169999999995 -43.9362V-154.06380000000001H103.44393Q113.62239 -154.06380000000001 121.54823999999999 -152.22834Q129.47409 -150.39288 135.0639 -146.80539Q140.65371 -143.2179 143.57376 -137.87838Q146.49381 -132.53886 146.49381 -125.36388000000001Q146.49381 -118.68948 143.74061999999998 -113.34996000000001Q140.98743 -108.01044 134.89704 -104.75667000000001Q128.80665 -101.50290000000001 118.96190999999999 -100.6686V-99.16686Q135.81477 -98.33256 143.4069 -91.32444000000001Q150.99903 -84.31632 150.99903 -72.80298Q150.99903 -63.1251 145.99322999999998 -56.78442Q140.98743 -50.44374 131.39298 -47.18997Q121.79853 -43.9362 107.61543 -43.9362ZM86.09048999999999 -65.628H106.44740999999999Q114.95727 -65.628 119.62935 -68.71491Q124.30143000000001 -71.80181999999999 124.30143000000001 -77.47506Q124.30143000000001 -83.81574 119.04534000000001 -86.90265000000001Q113.78925000000001 -89.98956000000001 103.27707000000001 -89.98956000000001H86.09048999999999ZM86.09048999999999 -108.34416H100.60731Q110.11833 -108.34416 115.12413000000001 -111.5145Q120.12993 -114.68484000000001 120.12993 -120.85866Q120.12993 -126.69876000000001 115.62471 -129.61881Q111.11949 -132.53886 102.10905 -132.53886H86.09048999999999Z"/></g><circle cx="539.8" cy="-99.0" r="88.7" fill="#e04a2f" stroke="#dba23c" stroke-width="26.5"/><circle cx="996.0" cy="-99.0" r="88.7" fill="none" stroke="#dba23c" stroke-width="26.5" stroke-dasharray="43.20 26.48" transform="rotate(-14 996.0 -99.0)"/></g></svg>
+    <div data-l="it">
+      <h1>Paga in bitcoin nei locali della tua città.</h1>
+      <p class="lede">Una pizza, un caffè, una notte: pagati in sats, nei posti che conosci già.</p>
+    </div>
+    <div data-l="en">
+      <h1>Pay in bitcoin at local places.</h1>
+      <p class="lede">A pizza, a coffee, a night's stay: paid in sats, at venues you already know.</p>
+    </div>
+  </header>
+
+  <section id="card" class="panel">
+    <div data-l="it">
+      <h2>Hai una card BUONO?</h2>
+      <p>La tua card contiene un piccolo regalo in bitcoin. Ecco come usarla.</p>
+      <ol class="steps">
+        <li>Stacca l'adesivo sul retro.</li>
+        <li>Inquadra il codice sottostante con la fotocamera del telefono.</li>
+        <li>Installa Blitz Wallet quando richiesto e accetta il regalo.</li>
+        <li>Vai in un locale BUONO, chiedi di pagare in bitcoin e inquadra il codice che ti mostra il cameriere.</li>
+      </ol>
+      <p class="small">La card funziona una volta sola e vale come denaro contante: lascia l'adesivo finché non sei pronto. Riscattala entro la data stampata sul retro.</p>
+    </div>
+    <div data-l="en">
+      <h2>Got a BUONO card?</h2>
+      <p>Your card holds a small bitcoin gift. Here's how to use it.</p>
+      <ol class="steps">
+        <li>Peel off the sticker on the back.</li>
+        <li>Scan the code underneath with your phone's camera.</li>
+        <li>Install Blitz Wallet when prompted, and accept the gift.</li>
+        <li>Go to a BUONO venue, ask to pay in bitcoin, and scan the code the waiter shows you.</li>
+      </ol>
+      <p class="small">The card works once and is as good as cash, so keep the sticker on until you're ready. Claim it before the date printed on the back.</p>
+    </div>
+  </section>
+  <section id="wallet">
+    <div data-l="it">
+      <h2>Hai già un wallet Lightning?</h2>
+      <p>Cerca l'adesivo BUONO in vetrina. Chiedi di pagare in bitcoin, scegli tra i prodotti BUONO e inquadra il codice del cameriere con il tuo wallet. Va bene qualsiasi wallet Lightning.</p>
+      <p>Siete in più al tavolo? I prodotti BUONO si pagano in sats, il resto del conto con carta o contanti come sempre.</p>
+    </div>
+    <div data-l="en">
+      <h2>Already have a Lightning wallet?</h2>
+      <p>Look for the BUONO sticker in the window. Ask to pay in bitcoin, choose from the BUONO items, and scan the waiter's code with your wallet. Any Lightning wallet works.</p>
+      <p>Sharing a table? BUONO items are paid in sats, and everything else on the bill by card or cash as usual.</p>
+    </div>
+  </section>
+  <section id="where">
+    <div data-l="it">
+      <h2>Dove usarlo</h2>
+      <p>Cerca l'adesivo BUONO in vetrina. L'elenco dei locali arriverà presto su questa pagina.</p>
+      <!-- Per elencare i locali a mano, copia questo blocco per ogni locale e togli i segni di commento:
+      <ul class="venues">
+        <li><b>Nome del locale</b><span>Prodotto · 12,00 €</span><a href="https://btcmap.org/">Scheda su BTC Map</a></li>
+      </ul>
+      -->
+    </div>
+    <div data-l="en">
+      <h2>Where to use it</h2>
+      <p>Look for the BUONO sticker in the window. A list of venues is coming to this page soon.</p>
+      <!-- To list venues by hand, copy this block for each venue and remove the comment marks:
+      <ul class="venues">
+        <li><b>Venue name</b><span>Item · €12.00</span><a href="https://btcmap.org/">BTC Map listing</a></li>
+      </ul>
+      -->
+    </div>
+  </section>
+  <section id="how">
+    <div data-l="it">
+      <h2>Come funziona</h2>
+      <p>Una persona del posto, l'organizzatore, paga in anticipo a un locale un certo numero di prodotti, in euro. Quando ne compri uno, paghi l'organizzatore in sats al cambio del giorno. Il locale è già stato pagato: non gli serve un wallet e non deve gestire bitcoin.</p>
+      <p>Il prezzo è fisso in euro. Cambia solo il numero di sats.</p>
+    </div>
+    <div data-l="en">
+      <h2>How it works</h2>
+      <p>Someone local, the organiser, pays a venue in advance for a batch of items, in euros. When you buy one, you pay the organiser in sats at the day's rate. The venue has already been paid, so it never needs a wallet or has to handle bitcoin.</p>
+      <p>The price is fixed in euros. Only the number of sats changes.</p>
+    </div>
+  </section>
+  <section id="venues">
+    <div data-l="it">
+      <h2>Hai un locale?</h2>
+      <p>Partecipare non costa nulla e non richiede di conoscere bitcoin. Vieni pagato in anticipo in euro e incassi con un telefono qualsiasi.</p>
+      <p>Per saperne di più, chiedi in un locale BUONO.</p>
+      <!-- Sostituisci la riga qui sopra con il tuo contatto, per esempio:
+      <p>Scrivi a <a href="mailto:nome@esempio.it">nome@esempio.it</a>.</p> -->
+    </div>
+    <div data-l="en">
+      <h2>Run a venue?</h2>
+      <p>Taking part costs nothing and needs no bitcoin knowledge. You're paid up front in euros and take payment with any phone.</p>
+      <p>To find out more, ask at any BUONO venue.</p>
+      <!-- Replace the line above with your own contact, for example:
+      <p>Write to <a href="mailto:name@example.com">name@example.com</a>.</p> -->
+    </div>
+  </section>
+  <section id="town">
+    <div data-l="it">
+      <h2>Porta BUONO nella tua città</h2>
+      <p>BUONO è un software libero e gratuito. Chiunque può avviare un circuito.</p>
+      <p><a class="btn" href="https://github.com/blankworker1/buono-btc/blob/main/GUIDE.md">Leggi la guida</a></p>
+    </div>
+    <div data-l="en">
+      <h2>Bring BUONO to your town</h2>
+      <p>BUONO is free, open-source software. Anyone can set up a scheme.</p>
+      <p><a class="btn" href="https://github.com/blankworker1/buono-btc/blob/main/GUIDE.md">Read the guide</a></p>
+    </div>
+  </section>
+
+  <footer>
+    <button id="lang"></button>
+    <a href="index.html?setup"><span data-l="it">Area organizzatore</span><span data-l="en">Organiser sign-in</span></a>
+  </footer>
+</main>
+<script>
+/* Language: Italian for Italian-language phones, English for everyone else; the button switches. */
+(() => {
+  const root = document.documentElement, btn = document.getElementById("lang");
+  const set = l => { root.dataset.lang = l; root.lang = l; btn.textContent = l === "it" ? "English" : "Italiano"; };
+  const asked = new URLSearchParams(location.search).get("lang");
+  set(asked === "it" || asked === "en" ? asked : /^it\b/i.test(navigator.language || "") ? "it" : "en");
+  btn.onclick = () => set(root.dataset.lang === "it" ? "en" : "it");
+})();
+</script>
+</body>
+</html>
