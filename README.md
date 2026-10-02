@@ -1,5 +1,7 @@
 # buono-btc
 
+<p align="center"><img src="buono-sticker.svg" width="260" alt="BUONO"></p>
+
 A single-file web app for running a community voucher scheme paid in bitcoin.
 
 An organiser prepays a local venue for a fixed number of items, such as ten pizzas. Customers then pay for those items in sats over Lightning, at the venue, at the day's exchange rate. The venue has already been paid in its own currency and never has to touch bitcoin. The sats go to the organiser's wallet, and a counter shows how many prepaid items are left.
