@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="it" data-lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BUONO</title>
+<meta name="description" content="Pay in bitcoin at local places.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23143826'/%3E%3Ccircle cx='32' cy='32' r='17' fill='%23e04a2f' stroke='%23dba23c' stroke-width='7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+<!-- BUONO home page.
+     This is the page a visitor sees: someone holding a gift card, a passer-by who scanned the window sticker, a venue owner.
+     All the wording is plain HTML below, once in Italian (data-l="it") and once in English (data-l="en"). Edit it freely.
+     It contains no keys and talks to no wallet. The till and the organiser's dashboard live in index.html. -->
+<style>
+:root{
+  --basil:#143826; --basil-2:#1c4a33; --basil-3:#2a6146;
+  --dough:#f2e6cc; --dim:#b9c4b0; --crust:#dba23c; --tomato:#e04a2f;
+  --display:"Bricolage Grotesque","Avenir Next Condensed","Trebuchet MS",system-ui,sans-serif;
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--basil); color:var(--dough); font-family:var(--body); font-size:18px; line-height:1.5;
+  padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+main{max-width:600px; margin:0 auto; padding:28px 22px 40px}
+[data-l]{display:none}
+html[data-lang="it"] [data-l="it"], html[data-lang="en"] [data-l="en"]{display:block}
+html[data-lang="it"] span[data-l="it"], html[data-lang="en"] span[data-l="en"]{display:inline}
+
+header{text-align:center; padding:8px 0 30px}
+header svg{width:min(62vw,230px); height:auto; display:block; margin:0 auto 22px}
+h1{font-family:var(--display); font-weight:800; font-size:clamp(34px,9vw,46px); line-height:1.02; letter-spacing:-.02em; margin:0 0 12px; text-wrap:balance}
+.lede{font-size:19px; color:var(--dim); margin:0 auto; max-width:30ch; text-wrap:balance}
+
+section{padding:26px 0 4px; border-top:1px solid var(--basil-3)}
+h2{font-family:var(--display); font-weight:800; font-size:27px; line-height:1.08; margin:0 0 10px}
+p{margin:0 0 14px}
+.small{font-size:16px; color:var(--dim)}
+a{color:var(--crust)}
+a:focus-visible, button:focus-visible{outline:3px solid var(--crust); outline-offset:3px}
+
+/* the card section answers the first question a card holder has, so it is the one bright panel */
+.panel{background:var(--dough); color:var(--basil); border:0; border-radius:22px; padding:24px 22px 12px; margin:0 -6px 26px}
+.panel .small{color:#3d5446}
+.steps{list-style:none; counter-reset:n; margin:16px 0 18px; padding:0}
+.steps li{counter-increment:n; position:relative; padding:0 0 14px 50px; min-height:44px}
+.steps li::before{content:counter(n); position:absolute; left:0; top:-3px; width:36px; height:36px; border-radius:50%;
+  background:var(--tomato); border:4px solid var(--crust); color:#fff; font-family:var(--display); font-weight:800; font-size:18px;
+  text-align:center; line-height:28px}
+.panel + section{border-top:0; padding-top:0}
+
+/* articles: each is a box showing the title and opening lines; a tap opens the rest */
+.post{border:1px solid var(--basil-3); border-radius:16px; background:var(--basil-2); margin:0 0 14px; overflow:hidden}
+.post summary{list-style:none; cursor:pointer; padding:16px; display:grid; grid-template-columns:76px 1fr; gap:14px; align-items:start}
+.post summary::-webkit-details-marker{display:none}
+.post summary:focus-visible{outline:3px solid var(--crust); outline-offset:-3px}
+.post .thumb{width:76px; height:76px; border-radius:12px; display:block; object-fit:cover}
+.post h3{font-family:var(--display); font-weight:800; font-size:21px; line-height:1.1; margin:0 0 4px}
+.post .date{font-size:14px; color:var(--dim); margin:0 0 6px}
+.post .teaser{font-size:16px; margin:0}
+.post .more, .post .less{display:inline-block; margin-top:8px; font-size:15px; color:var(--crust); text-decoration:underline}
+.post .less, .post[open] .more{display:none}
+.post[open] .less{display:inline-block}
+.post .body{padding:0 16px 4px; font-size:17px}
+
+.venues{list-style:none; margin:0 0 16px; padding:0}
+.venues li{padding:12px 0; border-bottom:1px solid var(--basil-3)}
+.venues b, .venues span, .venues a{display:block}
+.venues span{color:var(--dim); font-size:16px}
+.btn{display:inline-block; border:2px solid var(--crust); border-radius:999px; padding:10px 20px; text-decoration:none; font-weight:600}
+
+footer{display:flex; justify-content:space-between; gap:16px; border-top:1px solid var(--basil-3); margin-top:26px; padding-top:18px; font-size:15px}
+footer a, footer button{color:var(--dim); background:none; border:0; padding:6px 0; font:inherit; font-size:15px; text-decoration:underline; cursor:pointer}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1372 1372" role="img" aria-label="BUONO"><circle cx="686.2" cy="686.2" r="686.2" fill="#143826"/><circle cx="686.2" cy="686.2" r="642.3" fill="none" stroke="#dba23c" stroke-width="16.5"/><g transform="translate(137.2,785.2)"><path fill="#f2e6cc" d="M320.74 4.2Q303.64 4.2 290.14 0.30000000000000027Q276.64 -3.5999999999999996 266.89 -10.8Q257.14 -18.0 250.69 -28.05Q244.24 -38.1 241.09 -50.7Q237.94 -63.3 237.94 -78.0V-198.0H286.54V-80.39999999999999Q286.54 -65.1 291.04 -55.949999999999996Q295.54 -46.8 303.19000000000005 -42.9Q310.84000000000003 -39.0 320.74 -39.0Q330.94 -39.0 338.59000000000003 -42.9Q346.24 -46.8 350.74 -55.8Q355.24 -64.8 355.24 -80.39999999999999V-198.0H403.84000000000003V-78.0Q403.84000000000003 -39.0 382.84000000000003 -17.4Q361.84000000000003 4.2 320.74 4.2Z M675.78 0.0V-198.0H740.88L811.38 -63.9H811.98V-198.0H859.98V0.0H798.78L724.38 -138.6H723.78V0.0Z"/><circle cx="102.0" cy="-99.0" r="102.0" fill="#f7931a"/><g fill="#ffffff" transform="rotate(14 102.0 -99.0)"><rect x="77.4" y="-177.2" width="12.4" height="27.5"/><rect x="77.4" y="-48.3" width="12.4" height="27.5"/><rect x="101.3" y="-177.2" width="12.4" height="27.5"/><rect x="101.3" y="-48.3" width="12.4" height="27.5"/><path d="M59.059169999999995 -43.9362V-154.06380000000001H103.44393Q113.62239 -154.06380000000001 121.54823999999999 -152.22834Q129.47409 -150.39288 135.0639 -146.80539Q140.65371 -143.2179 143.57376 -137.87838Q146.49381 -132.53886 146.49381 -125.36388000000001Q146.49381 -118.68948 143.74061999999998 -113.34996000000001Q140.98743 -108.01044 134.89704 -104.75667000000001Q128.80665 -101.50290000000001 118.96190999999999 -100.6686V-99.16686Q135.81477 -98.33256 143.4069 -91.32444000000001Q150.99903 -84.31632 150.99903 -72.80298Q150.99903 -63.1251 145.99322999999998 -56.78442Q140.98743 -50.44374 131.39298 -47.18997Q121.79853 -43.9362 107.61543 -43.9362ZM86.09048999999999 -65.628H106.44740999999999Q114.95727 -65.628 119.62935 -68.71491Q124.30143000000001 -71.80181999999999 124.30143000000001 -77.47506Q124.30143000000001 -83.81574 119.04534000000001 -86.90265000000001Q113.78925000000001 -89.98956000000001 103.27707000000001 -89.98956000000001H86.09048999999999ZM86.09048999999999 -108.34416H100.60731Q110.11833 -108.34416 115.12413000000001 -111.5145Q120.12993 -114.68484000000001 120.12993 -120.85866Q120.12993 -126.69876000000001 115.62471 -129.61881Q111.11949 -132.53886 102.10905 -132.53886H86.09048999999999Z"/></g><circle cx="539.8" cy="-99.0" r="88.7" fill="#e04a2f" stroke="#dba23c" stroke-width="26.5"/><circle cx="996.0" cy="-99.0" r="88.7" fill="none" stroke="#dba23c" stroke-width="26.5" stroke-dasharray="43.20 26.48" transform="rotate(-14 996.0 -99.0)"/></g></svg>
+    <div data-l="it">
+      <h1>Paga in bitcoin nei locali della tua città.</h1>
+      <p class="lede">Una pizza, un cocktail, una notte: pagati in sats, nei posti che conosci già.</p>
+    </div>
+    <div data-l="en">
+      <h1>Pay in bitcoin at local places.</h1>
+      <p class="lede">A pizza, a cocktail, a night's stay: paid in sats, at venues you already know.</p>
+    </div>
+  </header>
+
+  <section id="card" class="panel">
+    <div data-l="it">
+      <h2>Hai una card BUONO?</h2>
+      <p>La tua card contiene un piccolo regalo in bitcoin. Ecco come usarla.</p>
+      <ol class="steps">
+        <li>Stacca l'adesivo sul retro.</li>
+        <li>Inquadra il codice sottostante con la fotocamera del telefono.</li>
+        <li>Installa Blitz Wallet quando richiesto e accetta il regalo.</li>
+        <li>Vai in un locale BUONO, chiedi di pagare in bitcoin e inquadra il codice che ti mostra il cameriere.</li>
+      </ol>
+      <p class="small">La card funziona una volta sola e vale come denaro contante: lascia l'adesivo finché non sei pronto. Riscattala entro la data stampata sul retro.</p>
+    </div>
+    <div data-l="en">
+      <h2>Got a BUONO card?</h2>
+      <p>Your card holds a small bitcoin gift. Here's how to use it.</p>
+      <ol class="steps">
+        <li>Peel off the sticker on the back.</li>
+        <li>Scan the code underneath with your phone's camera.</li>
+        <li>Install Blitz Wallet when prompted, and accept the gift.</li>
+        <li>Go to a BUONO venue, ask to pay in bitcoin, and scan the code the waiter shows you.</li>
+      </ol>
+      <p class="small">The card works once and is as good as cash, so keep the sticker on until you're ready. Claim it before the date printed on the back.</p>
+    </div>
+  </section>
+  <section id="wallet">
+    <div data-l="it">
+      <h2>Hai già un wallet Lightning?</h2>
+      <p>Cerca l'adesivo BUONO in vetrina. Chiedi di pagare in bitcoin, scegli tra i prodotti BUONO e inquadra il codice del cameriere con il tuo wallet. Va bene qualsiasi wallet Lightning.</p>
+      <p>Siete in più al tavolo? I prodotti BUONO si pagano in sats, il resto del conto con carta o contanti come sempre.</p>
+    </div>
+    <div data-l="en">
+      <h2>Already have a Lightning wallet?</h2>
+      <p>Look for the BUONO sticker in the window. Ask to pay in bitcoin, choose from the BUONO items, and scan the waiter's code with your wallet. Any Lightning wallet works.</p>
+      <p>Sharing a table? BUONO items are paid in sats, and everything else on the bill by card or cash as usual.</p>
+    </div>
+  </section>
+  <section id="where">
+    <div data-l="it">
+      <h2>Dove usarlo</h2>
+      <p>Cerca l'adesivo BUONO in vetrina. L'elenco dei locali arriverà presto su questa pagina.</p>
+      <!-- Per elencare i locali a mano, copia questo blocco per ogni locale e togli i segni di commento:
+      <ul class="venues">
+        <li><b>Nome del locale</b><span>Prodotto · 12,00 €</span><a href="https://btcmap.org/">Scheda su BTC Map</a></li>
+      </ul>
+      -->
+    </div>
+    <div data-l="en">
+      <h2>Where to use it</h2>
+      <p>Look for the BUONO sticker in the window. A list of venues is coming to this page soon.</p>
+      <!-- To list venues by hand, copy this block for each venue and remove the comment marks:
+      <ul class="venues">
+        <li><b>Venue name</b><span>Item · €12.00</span><a href="https://btcmap.org/">BTC Map listing</a></li>
+      </ul>
+      -->
+    </div>
+  </section>
+  <section id="how">
+    <div data-l="it">
+      <h2>Come funziona</h2>
+      <p>Una persona del posto, l'organizzatore, paga in anticipo a un locale un certo numero di prodotti, in euro. Quando ne compri uno, paghi l'organizzatore in sats al cambio del giorno. Il locale è già stato pagato: non gli serve un wallet e non deve gestire bitcoin.</p>
+      <p>Il prezzo è fisso in euro. Cambia solo il numero di sats.</p>
+    </div>
+    <div data-l="en">
+      <h2>How it works</h2>
+      <p>Someone local, the organiser, pays a venue in advance for a batch of items, in euros. When you buy one, you pay the organiser in sats at the day's rate. The venue has already been paid, so it never needs a wallet or has to handle bitcoin.</p>
+      <p>The price is fixed in euros. Only the number of sats changes.</p>
+    </div>
+  </section>
+  <section id="articles">
+    <!-- Articles. To add one, copy a whole <details class="post"> … </details> block, in both languages, and change the text.
+         The newest goes first. For a photo thumbnail, replace the <svg class="thumb"> … </svg> with
+         <img class="thumb" src="my-picture.jpg" alt=""> and upload the picture next to this file. -->
+    <div data-l="it">
+      <h2>Articoli</h2>
+      <details class="post">
+        <summary>
+          <svg class="thumb" viewBox="0 0 76 76" aria-hidden="true"><rect width="76" height="76" fill="#143826"/><circle cx="38" cy="38" r="21" fill="none" stroke="#dba23c" stroke-width="3" stroke-dasharray="7 5"/><circle cx="38" cy="17" r="8" fill="#e04a2f" stroke="#dba23c" stroke-width="3"/><circle cx="56.2" cy="48.5" r="8" fill="#e04a2f" stroke="#dba23c" stroke-width="3"/><circle cx="19.8" cy="48.5" r="8" fill="#e04a2f" stroke="#dba23c" stroke-width="3"/></svg>
+          <div>
+            <h3>Seminare un'economia circolare</h3>
+            <p class="date">3 ottobre 2026</p>
+            <p class="teaser">Un'economia circolare è la destinazione. BUONO riguarda il passo che viene prima: seminare bitcoin in una città, e continuare a farlo.</p>
+            <span class="more">Continua a leggere</span><span class="less">Chiudi</span>
+          </div>
+        </summary>
+        <div class="body">
+          <p>Oggi il flusso è semplice. Entrano euro: un organizzatore paga in anticipo a un locale un certo numero di suoi prodotti. Circolano bitcoin: i clienti pagano quei prodotti in sats, e i sats tornano all'organizzatore. Lungo la strada una parte dei sats resta nei wallet di chi ha appena ricevuto i suoi primi. È proprio questo lo scopo, ed è anche il motivo per cui il giro non è del tutto efficiente.</p>
+          <p>Tre attività procedono in parallelo per farlo girare.</p>
+          <p><b>Prodotti prepagati.</b> Il locale viene pagato in anticipo in euro e non ha nulla da perdere. Incassa in sats con un telefono e non deve mai tenere bitcoin.</p>
+          <p><b>Card regalo.</b> Una card mette qualche sats nelle mani di chi non ne ha mai avuti. La persona installa un wallet, riscatta il regalo e lo spende in un locale.</p>
+          <p><b>Contanti in cambio di sats, da persona a persona.</b> Agli incontri periodici di BUONO, e agli incontri bitcoin che già si tengono in città, si cambiano contanti in sats direttamente tra persone, e col tempo forse a una piccola macchina Lightning. Gli euro raccolti così servono al lotto successivo di prodotti.</p>
+          <p>È la terza attività a rendere sostenibile la semina. Senza, ogni nuovo lotto ha bisogno di denaro fresco dall'esterno. Con essa, gli euro che comprano sats diventano gli euro che prepagano i locali, e i sats che tornano dalla cassa ripartono verso la persona successiva.</p>
+          <p>Non è ancora un'economia circolare. Per quella serve la piena partecipazione dei locali: che tengano i sats incassati e li spendano a loro volta. È un passo che per ora va oltre ciò che BUONO si propone. Quello che può fare è questo: quando un locale sarà pronto, ci saranno già persone vicine con dei sats in tasca e l'abitudine di spenderli.</p>
+        </div>
+      </details>
+      <details class="post">
+        <summary>
+          <svg class="thumb" viewBox="0 0 76 76" aria-hidden="true"><rect width="76" height="76" fill="#143826"/><ellipse cx="38" cy="38" rx="15" ry="21" fill="none" stroke="#dba23c" stroke-width="7"/><circle cx="38" cy="38" r="5" fill="#e04a2f"/></svg>
+          <div>
+            <h3>Zero debiti</h3>
+            <p class="date">3 ottobre 2026</p>
+            <p class="teaser">Un locale che entra in BUONO viene pagato prima che arrivi il primo cliente, e non deve mai soldi a nessuno.</p>
+            <span class="more">Continua a leggere</span><span class="less">Chiudi</span>
+          </div>
+        </summary>
+        <div class="body">
+          <p>L'offerta sta in una riga. Vendi un lotto di qualcosa che già prepari, dieci pizze, venti cocktail, due notti, e vieni pagato per tutto oggi, in euro.</p>
+          <p><b>Cosa comporta.</b> Si concordano un prodotto e un prezzo. Ricevi il pagamento, con i documenti che useresti per qualsiasi ordine anticipato. Ti vengono dati un codice QR per lo staff e un adesivo per la vetrina. La preparazione è tutta qui.</p>
+          <p><b>Una vendita.</b> Un cliente chiede di pagare in bitcoin. Il cameriere apre la cassa sul telefono, sceglie la quantità e mostra un codice al cliente. Il cliente paga, lo schermo diventa verde, e quel prodotto viene segnato sul conto come già pagato. Il resto del tavolo si paga con carta o contanti come sempre.</p>
+          <p><b>Cosa non devi fare mai.</b> Non tieni bitcoin, non impari a usare un wallet, non guardi il prezzo, non paghi commissioni e non aspetti di essere pagato.</p>
+          <p><b>Zero debiti.</b> Bitcoin è denaro che non è il debito di nessuno. Non è la promessa di una banca: o ce l'hai o non ce l'hai. Un locale BUONO si trova nella stessa posizione. Niente è a credito, niente può essere stornato, e nessuno torna più tardi a chiedere soldi.</p>
+          <p>Una cosa la devi: le pizze. Sei stato pagato per dieci, quindi ne servi dieci. È un debito di impasto, non di euro, e sono pizze che avresti fatto comunque.</p>
+          <p>Se un giorno vorrai tenerti i sats, quella porta è aperta. Niente di tutto questo dipende da quella scelta.</p>
+        </div>
+      </details>
+      <details class="post">
+        <summary>
+          <svg class="thumb" viewBox="0 0 76 76" aria-hidden="true"><rect width="76" height="76" fill="#143826"/><line x1="46" y1="46" x2="60" y2="60" stroke="#dba23c" stroke-width="8" stroke-linecap="round"/><circle cx="33" cy="33" r="17" fill="#143826" stroke="#dba23c" stroke-width="6"/><circle cx="33" cy="33" r="7" fill="#e04a2f"/></svg>
+          <div>
+            <h3>Il cliente misterioso</h3>
+            <p class="date">3 ottobre 2026 · Un racconto</p>
+            <p class="teaser">Sono venuto per un fine settimana e sono ripartito dopo aver pagato una pizza con soldi che venerdì non avevo.</p>
+            <span class="more">Continua a leggere</span><span class="less">Chiudi</span>
+          </div>
+        </summary>
+        <div class="body">
+          <p>Per primo ho notato l'adesivo. Un cerchio verde nella vetrina di una pizzeria, una B arancione, la parola BUONO e sotto, in inglese, «accepted here». Non avevo idea di cosa volesse dire, che è un buon motivo per scoprirlo.</p>
+          <p>Quella sera c'era un incontro in un bar vicino alla piazza. Una dozzina di persone, due portatili, più chiacchiere sulla città che sulla tecnologia. Qualcuno mi ha dato una card quadrata con lo stesso logo e un numero: Nº 0042. «Stacca l'adesivo quando sei pronto», mi ha detto.</p>
+          <p>Ero pronto circa quattro minuti dopo. Sotto l'adesivo c'era un codice. La fotocamera del telefono ha aperto una pagina, la pagina mi ha proposto un wallet, e il wallet mi ha detto che avevo ricevuto un regalo. Ho anche cambiato una banconota da venti euro con il signore accanto a me, per averne un po' di più. La mia educazione finanziaria è stata tutta qui, ed è durata meno che ordinare da bere.</p>
+          <p>Il giorno dopo sono tornato in pizzeria per vedere cosa sarebbe successo. Sul menù, di bitcoin, non c'era traccia. Quando è arrivato il cameriere ho chiesto, con la massima disinvoltura possibile, qual era la Bitcoin Special del giorno.</p>
+          <p>Speravo in un sopracciglio alzato. Niente. «Salsiccia e finocchietto», ha detto, e ha scritto una riga sul blocco. È arrivata, era buona, e alla fine lui ha preso un telefono da dietro il banco, ha toccato due volte lo schermo e l'ha girato verso di me. Ho inquadrato il codice. Il suo schermo è diventato verde. Il mio amico ha pagato il vino con la carta, come avremmo diviso qualsiasi conto.</p>
+          <p>Il pomeriggio dopo ho rifatto la stessa domanda in una gelateria. Stesso adesivo, stessa assenza di scena: la special era una coppetta con i gusti fatti dal gelataio quella mattina, fichi e una ricotta per cui tornerei. Ho chiesto alla titolare cosa ne pensasse. «Quelle coppette me le hanno pagate il mese scorso», ha detto. «Tu ne stai solo ritirando una.»</p>
+          <p>Per tutto il fine settimana nessuno ha nominato il prezzo di bitcoin. La card è ancora nel mio portafoglio.</p>
+          <p class="small"><em>Questo è un racconto di fantasia, scritto per mostrare come funziona BUONO dal lato del cliente.</em></p>
+        </div>
+      </details>
+      <details class="post">
+        <summary>
+          <svg class="thumb" viewBox="0 0 76 76" aria-hidden="true"><rect width="76" height="76" fill="#143826"/><polygon fill="#dba23c" points="38,8 44.5,28 64,22 51,38 64,54 44.5,48 38,68 31.5,48 12,54 25,38 12,22 31.5,28"/><circle cx="38" cy="38" r="9" fill="#e04a2f"/></svg>
+          <div>
+            <h3>La Bitcoin Special</h3>
+            <p class="date">3 ottobre 2026</p>
+            <p class="teaser">Quasi tutti vorrebbero che bitcoin diventasse normale. A noi piacerebbe che fosse speciale.</p>
+            <span class="more">Continua a leggere</span><span class="less">Chiudi</span>
+          </div>
+        </summary>
+        <div class="body">
+          <p>Di solito si spera che pagare in bitcoin diventi banale come avvicinare una carta. Forse succederà. Nel frattempo, un modo di pagare banale non dà a nessuno un motivo per provarlo.</p>
+          <p>BUONO parte dall'altro capo. In un locale BUONO, con bitcoin si compra qualcosa che non si può avere in altro modo: la Bitcoin Special. Non è sul menù. Va chiesta per nome, e la risposta cambia di giorno in giorno.</p>
+          <p><b>In pizzeria</b> è quello che il pizzaiolo ha voglia di fare. <b>Al bar</b> è il cocktail della serata. <b>In gelateria</b> è la scelta del gelataio tra i gusti del giorno.</p>
+          <p>Il prezzo è fisso e ti viene detto prima di ordinare, e il cameriere sa dirti cosa c'è dentro. Quello che non hai è la scelta, ed è proprio lì il piacere.</p>
+          <p>Per il locale è libertà. La Special è pagata in anticipo come una pizza, un drink o una coppetta, non come una ricetta.</p>
+          <p>La stessa domanda vale ovunque. La impari una volta e la città si apre un po': gelato al pomeriggio, cocktail all'aperitivo, pizza la sera.</p>
+          <p>«Qual è la Bitcoin Special di oggi?» È una piccola cosa da chiedere. È anche il modo in cui bitcoin smette di essere un modo di pagare e diventa un motivo per entrare.</p>
+        </div>
+      </details>
+    </div>
+    <div data-l="en">
+      <h2>Articles</h2>
+      <details class="post">
+        <summary>
+          <svg class="thumb" viewBox="0 0 76 76" aria-hidden="true"><rect width="76" height="76" fill="#143826"/><circle cx="38" cy="38" r="21" fill="none" stroke="#dba23c" stroke-width="3" stroke-dasharray="7 5"/><circle cx="38" cy="17" r="8" fill="#e04a2f" stroke="#dba23c" stroke-width="3"/><circle cx="56.2" cy="48.5" r="8" fill="#e04a2f" stroke="#dba23c" stroke-width="3"/><circle cx="19.8" cy="48.5" r="8" fill="#e04a2f" stroke="#dba23c" stroke-width="3"/></svg>
+          <div>
+            <h3>Seeding a Circular Economy</h3>
+            <p class="date">3 October 2026</p>
+            <p class="teaser">A circular economy is the destination. BUONO is about the step before it: planting bitcoin in a town, and keeping that planting going.</p>
+            <span class="more">Read more</span><span class="less">Close</span>
+          </div>
+        </summary>
+        <div class="body">
+          <p>Today the flow is simple. Euros go in: an organiser pays a venue in advance for a batch of its products. Bitcoin circulates: customers pay for those products in sats, and the sats return to the organiser. Along the way some sats stay in the wallets of people who have just received their first. That last part is the point, and it is also why the loop is not fully efficient.</p>
+          <p>Three activities run side by side to keep it turning.</p>
+          <p><b>Prepaid products.</b> A venue is paid up front in euros and has nothing to lose. It takes payment in sats with a phone and never has to hold bitcoin.</p>
+          <p><b>Gift cards.</b> A card puts a few sats into the hands of someone who has never had any. They install a wallet, claim the gift, and spend it at a venue.</p>
+          <p><b>Cash for sats, person to person.</b> At regular BUONO meet-ups, and at existing bitcoin meet-ups in the city, people swap cash for sats directly with one another, and in time perhaps at a small Lightning machine. Euros raised this way go towards the next batch of products.</p>
+          <p>The third activity is what makes the seeding sustainable. Without it, every new batch needs fresh money from outside. With it, the euros that buy sats become the euros that prepay venues, and the sats that come back through the till go out again to the next person.</p>
+          <p>This is not yet a circular economy. That needs venues to take part fully: to keep the sats they earn and spend them in turn. That step is beyond what BUONO sets out to do for now. What it can do is make sure that when a venue is ready, there are already people nearby with sats in their pockets and the habit of spending them.</p>
+        </div>
+      </details>
+      <details class="post">
+        <summary>
+          <svg class="thumb" viewBox="0 0 76 76" aria-hidden="true"><rect width="76" height="76" fill="#143826"/><ellipse cx="38" cy="38" rx="15" ry="21" fill="none" stroke="#dba23c" stroke-width="7"/><circle cx="38" cy="38" r="5" fill="#e04a2f"/></svg>
+          <div>
+            <h3>Zero debiti</h3>
+            <p class="date">3 October 2026</p>
+            <p class="teaser">A venue that joins BUONO is paid before its first customer arrives, and never owes anyone money.</p>
+            <span class="more">Read more</span><span class="less">Close</span>
+          </div>
+        </summary>
+        <div class="body">
+          <p>The offer fits in one line. You sell a batch of something you already make, ten pizzas, twenty cocktails, two nights' stay, and you are paid for all of it today, in euros.</p>
+          <p><b>What is involved.</b> You agree a product and a price. You receive the payment, with the paperwork you would use for any advance order. You get a QR code for your staff and a sticker for the window. That is the whole setup.</p>
+          <p><b>A sale.</b> A customer asks to pay in bitcoin. The waiter opens the till on a phone, chooses how many, and shows the customer a code. The customer pays, the screen turns green, and that item is marked on the bill as already paid. Everything else on the table is paid by card or cash as usual.</p>
+          <p><b>What you never do.</b> You never hold bitcoin, learn a wallet, watch a price, pay a commission, or wait to be paid.</p>
+          <p><b>Zero debiti.</b> Bitcoin is money that is nobody's debt. It is not a promise from a bank: you hold it or you don't. A BUONO venue stands in the same place. Nothing is on credit, nothing can be reversed, and nobody comes back later asking for money.</p>
+          <p>There is one thing you do owe: the pizzas. You have been paid for ten, so you serve ten. It is a debt in dough, not in euros, and one you were always going to make.</p>
+          <p>If one day you want to keep the sats yourself, that door is open. Nothing here depends on it.</p>
+        </div>
+      </details>
+      <details class="post">
+        <summary>
+          <svg class="thumb" viewBox="0 0 76 76" aria-hidden="true"><rect width="76" height="76" fill="#143826"/><line x1="46" y1="46" x2="60" y2="60" stroke="#dba23c" stroke-width="8" stroke-linecap="round"/><circle cx="33" cy="33" r="17" fill="#143826" stroke="#dba23c" stroke-width="6"/><circle cx="33" cy="33" r="7" fill="#e04a2f"/></svg>
+          <div>
+            <h3>The Mystery Shopper</h3>
+            <p class="date">3 October 2026 · A story</p>
+            <p class="teaser">I came for a weekend and left having bought a pizza with money I didn't own on Friday.</p>
+            <span class="more">Read more</span><span class="less">Close</span>
+          </div>
+        </summary>
+        <div class="body">
+          <p>I noticed the sticker first. A green circle in a pizzeria window, an orange B, the word BUONO, and underneath, in English, "accepted here". I had no idea what it meant, which is a good reason to find out.</p>
+          <p>That evening there was a meet-up in a bar off the main square. A dozen people, two laptops, more talk about the town than about technology. Someone handed me a square card with the same logo and a number on it: Nº 0042. "Peel the sticker when you're ready," she said.</p>
+          <p>I was ready about four minutes later. Under the sticker was a code. My phone's camera opened a page, the page offered me a wallet, and the wallet told me I had been given a gift. I also swapped a twenty-euro note with the man next to me for a little more. That was the whole of my financial education, and it took less time than ordering a drink.</p>
+          <p>The next day I went back to the pizzeria to see what would happen. There was nothing about bitcoin on the menu. When the waiter came I asked, as casually as I could, what the Bitcoin Special was today.</p>
+          <p>I was hoping for a raised eyebrow. I got none. "Sausage and wild fennel," he said, and wrote one line on his pad. It came, it was good, and at the end he fetched a phone from behind the counter, tapped twice and turned the screen towards me. I scanned it. His screen went green. My friend paid for the wine by card, the way we would have split any bill.</p>
+          <p>I asked the same question at a gelateria the next afternoon. Same sticker, same absence of drama: the special was a cup of whatever the gelataio had made that morning, fig and a ricotta I would go back for. I asked the owner what she made of it all. "I was paid for those cups last month," she said. "You're just collecting one."</p>
+          <p>Nobody mentioned the price of bitcoin all weekend. The card is still in my wallet.</p>
+          <p class="small"><em>This is an illustration of a visit, written to show how BUONO works from the customer's side.</em></p>
+        </div>
+      </details>
+      <details class="post">
+        <summary>
+          <svg class="thumb" viewBox="0 0 76 76" aria-hidden="true"><rect width="76" height="76" fill="#143826"/><polygon fill="#dba23c" points="38,8 44.5,28 64,22 51,38 64,54 44.5,48 38,68 31.5,48 12,54 25,38 12,22 31.5,28"/><circle cx="38" cy="38" r="9" fill="#e04a2f"/></svg>
+          <div>
+            <h3>The Bitcoin Special</h3>
+            <p class="date">3 October 2026</p>
+            <p class="teaser">Most people want bitcoin to be ordinary. We'd like it to be special.</p>
+            <span class="more">Read more</span><span class="less">Close</span>
+          </div>
+        </summary>
+        <div class="body">
+          <p>The usual hope is that paying in bitcoin becomes as unremarkable as tapping a card. That may come. In the meantime, an unremarkable way to pay gives nobody a reason to try it.</p>
+          <p>So BUONO starts from the other end. In a BUONO venue, bitcoin buys something you cannot get any other way: the Bitcoin Special. It is not on the menu. You have to ask for it by name, and the answer changes from day to day.</p>
+          <p><b>At the pizzeria</b> it is whatever the pizzaiolo feels like making. <b>At the bar</b> it is the cocktail of the evening. <b>At the gelateria</b> it is the gelataio's pick of the day's flavours.</p>
+          <p>The price is fixed and you are told it before you order, and the waiter can say what is in it. What you don't get is a choice, and that is the pleasure of it.</p>
+          <p>For the venue it is freedom. The Special is paid for in advance as a pizza, a drink or a cup, not as a recipe.</p>
+          <p>One question works everywhere. Learn it once and the town opens up a little: gelato in the afternoon, a cocktail at aperitivo, pizza at night.</p>
+          <p>"What is the Bitcoin Special today?" It is a small thing to ask. It is also how bitcoin stops being a way to pay and becomes a reason to walk in.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+  <section id="venues">
+    <div data-l="it">
+      <h2>Hai un locale?</h2>
+      <p>Partecipare non costa nulla e non richiede di conoscere bitcoin. Vieni pagato in anticipo in euro e incassi con un telefono qualsiasi.</p>
+      <p>Per saperne di più, chiedi in un locale BUONO.</p>
+      <!-- Sostituisci la riga qui sopra con il tuo contatto, per esempio:
+      <p>Scrivi a <a href="mailto:nome@esempio.it">nome@esempio.it</a>.</p> -->
+    </div>
+    <div data-l="en">
+      <h2>Run a venue?</h2>
+      <p>Taking part costs nothing and needs no bitcoin knowledge. You're paid up front in euros and take payment with any phone.</p>
+      <p>To find out more, ask at any BUONO venue.</p>
+      <!-- Replace the line above with your own contact, for example:
+      <p>Write to <a href="mailto:name@example.com">name@example.com</a>.</p> -->
+    </div>
+  </section>
+  <section id="town">
+    <div data-l="it">
+      <h2>Porta BUONO nella tua città</h2>
+      <p>BUONO è un software libero e gratuito. Chiunque può avviare un circuito.</p>
+      <p><a class="btn" href="https://github.com/blankworker1/buono-btc/blob/main/GUIDE.md">Leggi la guida</a></p>
+    </div>
+    <div data-l="en">
+      <h2>Bring BUONO to your town</h2>
+      <p>BUONO is free, open-source software. Anyone can set up a scheme.</p>
+      <p><a class="btn" href="https://github.com/blankworker1/buono-btc/blob/main/GUIDE.md">Read the guide</a></p>
+    </div>
+  </section>
+
+  <footer>
+    <button id="lang"></button>
+    <a href="index.html?setup"><span data-l="it">Area organizzatore</span><span data-l="en">Organiser sign-in</span></a>
+  </footer>
+</main>
+<script>
+/* Language: Italian for Italian-language phones, English for everyone else; the button switches. */
+(() => {
+  const root = document.documentElement, btn = document.getElementById("lang");
+  const set = l => { root.dataset.lang = l; root.lang = l; btn.textContent = l === "it" ? "English" : "Italiano"; };
+  const asked = new URLSearchParams(location.search).get("lang");
+  set(asked === "it" || asked === "en" ? asked : /^it\b/i.test(navigator.language || "") ? "it" : "en");
+  btn.onclick = () => set(root.dataset.lang === "it" ? "en" : "it");
+})();
+</script>
+</body>
+</html>
